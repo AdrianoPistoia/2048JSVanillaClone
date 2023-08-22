@@ -1,0 +1,15 @@
+{
+    "name": "My Sample PWA",
+    "lang": "es",
+    "id":"/",
+    "start_url": "/",
+    "display":"standalone",
+    "icons": [
+        {
+            "src": "../icons/consola.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+    
+}

@@ -1,0 +1,195 @@
+
+#block{
+    background-color:   red;
+    margin-left:        8px;
+    margin-top:         8px;
+    position:           absolute;
+    z-index:            0;
+    height:             50px;
+    width:              50px;
+    left:               0px;
+    top:                0px;
+}
+div.operationTable{
+    background-color:   rgba(0, 0, 0, 0.4);
+    justify-content:    space-evenly;
+    padding-top:        0px;
+    transition:         padding-top 0.2s ,width 0.7s cubic-bezier(0,1.47,.85,.9), height 0.3s, background-color 0.2s ease-in-out;
+    margin-top:         80px;
+    overflow:           hidden;
+    position:           fixed;
+    z-index:            2;
+    opacity:            0.5;
+    display:            flex;
+    height:             100px;
+    border:             2px solid rgba(66, 0, 0, 0.4);
+    width:              80px;
+    left:               0px;
+    top:                0px;
+}
+div.operationTable:hover{
+    background-color:   rgba(247, 53, 53, 0.37);
+    padding-top:        80px;
+    opacity:            1;
+    height:             80vh;
+    width:              100vw;
+}
+div.crowChat{
+    background-color:   white;
+    flex-direction:     column;
+    border-radius:      10px;
+    align-items:        center;
+    overflow-y:         scroll;
+    transition:         width 0.6s ;
+    text-align:         center;
+    padding:            1vw;
+    padding-top:        0px;
+    display:            flex;
+    border:             1px solid black;
+    height:             300px;
+    width:              29vw;
+}
+div.crowChat hr{
+    width:              70%;
+}
+div.crowChat h2{
+    background:         white;
+    position:           sticky;
+    margin:             0px;
+    width:              100%;
+    top:                0px;
+}
+div#Crow>p,
+div#Plague-Doctor>p{
+    letter-spacing:     2px;
+    word-spacing:       10px;
+    color:              rgb(0, 0, 0);
+}
+body{
+    justify-content:    center;
+    flex-direction:     column;
+    align-items:        center;
+    display:            flex;
+}
+.grid-table{
+
+    height:             248px;
+    width:              240px;
+}
+.background{
+    background-color:   rgb(89, 89, 89);
+    justify-content:    center;
+    padding-bottom:     4px;
+    padding-top:        4px;
+    flex-wrap:          wrap;
+    position:           absolute;
+    overflow:           hidden;
+    display:            flex;
+    z-index:            0;
+    height:             240px;
+    width:              240px;
+}
+
+.grid-block{
+    background-color:   rgb(204, 204, 92);
+    
+    font-weight:        bolder;
+    box-shadow:         inset 0px 0px 4px 5px rgba(0,0,0,0.75);
+    font-size:          larger;
+    color:              black;
+
+    justify-content:    center;
+    margin-bottom:      4px;
+    margin-right:       4px;
+    align-items:        center;
+    margin-left:        4px;
+    margin-top:         4px;
+    display:            flex;
+    height:             50px;
+    width:              50px;
+}
+@keyframes Y60 {
+    0%  {   
+        transform: translateY(0px);     }
+    100%{   
+        transform: translateY(-60px);    }
+}
+@keyframes Y120 {
+    0%  {   
+        transform: translateY(0px);     }
+    100%{   
+        transform: translateY(-120px);    }
+}
+@keyframes Y180 {
+    0%  {  
+         transform: translateY(0px);     }
+    100%{  
+         transform: translateY(-180px);    }
+}
+@keyframes Y-60 {
+    0%  {   
+        transform: translateY(0px);     }
+    100%{   
+        transform: translateY(60px);    }
+}
+@keyframes Y-120 {
+    0%  {   
+        transform: translateY(0px);     }
+    100%{   
+        transform: translateY(120px);    }
+}
+@keyframes Y-180 {
+    0%  {  
+         transform: translateY(0px);     }
+    100%{   
+        transform: translateY(180px);    }
+}
+.grid-block[class*="movement"]{
+    animation-timing-function:  cubic-bezier(.28,.92,0,.98);
+    animation-iteration-count:  1;
+    animation-fill-mode:        backwards;
+    animation-duration:         0.4s;
+    animation-delay:            0s;
+}
+
+[class*="Y60"]{
+    animation-name:Y60;
+}
+[class*="Y120"]{
+    animation-name:Y120;
+}
+[class*="Y180"]{
+    animation-name:Y180;
+}
+[class*="Y-60"]{
+    animation-name:Y-60;
+}
+[class*="Y-120"]{
+    animation-name:Y-120;
+}
+[class*="Y-180"]{
+    animation-name:Y-180;
+}
+
+/*Example of cool shit*/
+button[class|="btn"]{
+    width: 100px;
+    height: 50px;
+}
+[class*="red"]{
+    background-color: red;
+}
+[class*="green"]{
+    background-color: green;
+}
+@keyframes wobble {
+    0%,50%,100%{
+        transform: scaleX(1) scaleY(1.1);
+    }
+    25%,75%{
+        transform: scaleX(1.1) scaleY(1);
+    }
+}
+[class*="wobble"]{
+   animation: wobble 1.5s ease-in-out infinite normal; 
+}
