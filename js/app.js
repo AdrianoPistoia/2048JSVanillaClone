@@ -3,6 +3,14 @@
  *
  */
 
+let _winningTexts = {"title":"Good Job!",
+					 "parr":"That took a while, huh! Remember to brag to your friend and coworkers your of your ingenius tactics from wich you got that score!",
+					 "btnReset":"Reset",
+					 "btnRank":"Rank your score!"};
+
+let _losingTexts = { "title":"Ups! Seems you lost...",
+					 "parr":"You see... every loss leaves a meaningful lesson, sometimes we have to learn to adapt and become better selfs, and sometimes we just suck. I mean ... the score is right there, dude. I don't mean this is an easy game, but people can suck in hardmode too...",
+					 "btnReset":"Reset"};
 
 let playerDom = document.getElementById("block");
 let intPropertyValue = (target,property) => {
@@ -14,12 +22,12 @@ function addPositions(arr,arr2){
 	aux[1] = arr[1]+arr2[1];
 	return aux;
 }
-let _MessageCounter = 0;
 let _nullValue 		= "na";
 let _Direccion 		= ["KeyW","KeyA","KeyS","KeyD"];// NO USADO AUN
 let _setYOffset 	= 4;
 let _GameOverFlag	= false;
 
+let _MessageCounter = 0;
 class PlagueDoctor{
 	target 	= "";
 	constructor(id,title){
@@ -71,7 +79,7 @@ class tile {
     	this.value 		= value;
     	this.position 	= position;
   	};
-
+	
 	setValue(value)			{ this.value = value; }
 	setPosition(position)	{ this.position = position}
 	setIndex(i)				{ this.index = i; }
@@ -80,7 +88,6 @@ class tile {
 	getIndex()				{ return this.index; }
 	getPosition()			{ return this.position; }
 	prepareToMove(t){
-		crow.addMensaje("Tile t:",t)
 		this.index = t.getIndex();
 		this.position = t.getPosition();
 	};
@@ -137,7 +144,6 @@ class tileSet {
 		this.replaceTile(newTile)													// Insertamos un espacio abierto random en su lugar correspondiente dentro del set orignial
 	};
 	killTile(t){
-		crow.addMensaje("deleted tile:",t)
 		this.set[t.getIndex()] = t;
 	}
 
@@ -157,12 +163,67 @@ class UI{
 			block.appendChild(blockNumber);
 			this.target.appendChild(block)
 		})
-	}
+	};
+	updateScore(){
+		let currScore = document.querySelector("#currScore>span");
+		let highScore = document.querySelector("#highScore>span");
+		currScore.innerText = gp.currScore;
+		if(currScore.innerText >= gp.highScore) gp.highScore = currScore.innerText
+		highScore.innerText = gp.highScore;
+	};	
+	cerrarModal(){
+		document.getElementById("mlBody").parentElement.remove();
+	};
 	updateSet(set){
 		let blockGrid = document.querySelectorAll(".grid-block>p")
 		set.forEach(tile =>{
 			blockGrid[tile.getIndex()].innerText = tile.getValue()!=_nullValue ? tile.getValue() : "";
+			blockGrid[tile.getIndex()].parentNode.setAttribute("class","grid-block");
+			blockGrid[tile.getIndex()].parentNode.classList.add("v"+(tile.getValue()!=_nullValue ? tile.getValue() : ""));
 		})
+	};
+	
+	endOfGameModal(string){
+		let mlShadow 			= document.createElement("div");
+		let mlBody 				= document.createElement("div");
+		let mlTitle 			= document.createElement("h2");
+		let mlParagraph			= document.createElement("p");
+		let mlButtonsBar		= document.createElement("div");
+		let mlResetBtn			= document.createElement("button");
+		
+		
+		mlTitle.innerText		= string == "win"? _winningTexts.title	: _losingTexts.title;
+		mlParagraph.innerText	= string == "win"? _winningTexts.parr	: _losingTexts.parr;
+		mlResetBtn.innerText	= _winningTexts.btnReset; // just says reset (gatta move this to a "_generalTexts" or smth)
+		
+		mlButtonsBar.setAttribute("id","mlBtnBar");
+		mlShadow.setAttribute("class","mlShadow");
+		mlBody.setAttribute("id","mlBody");
+		
+		
+		mlResetBtn.addEventListener("click",function(){
+			/**
+			 * Resetear score, painter
+			 * Resetear tableSet GP
+			*/
+			painter.cerrarModal();
+			gp.resetBoard();
+			painter.updateSet(gp._GPTileSet.set);
+		})
+		
+		document.body.appendChild(mlShadow);		
+		mlShadow.appendChild(mlBody);
+		mlBody.appendChild(mlTitle);
+		mlBody.appendChild(mlParagraph);
+		mlBody.appendChild(mlButtonsBar);
+		mlButtonsBar.appendChild(mlResetBtn);
+		
+		if(string == "win"){
+			let mlRankBtn			= document.createElement("button");
+			mlRankBtn.innerText		= _winningTexts.btnReset;
+			mlRankBtn.addEventListener("clik",function(){painter.cerrarModal();});
+			mlButtonsBar.appendChild(mlRankBtn);
+		}
 	}
 };
 class animator{
@@ -171,8 +232,8 @@ class animator{
 	 */
 	_arrAnims = [];
 	toRemove = [];
-	setAnimationArr(ori,dest){
-		this._arrAnims.push({origen:ori,dest:dest});
+	setAnimationArr(ori,dest,bool = false){
+		this._arrAnims.push({origen:ori,dest:dest,bool:bool});
 	};
 	batchAnimation(){
 		this._arrAnims.forEach(an=>{
@@ -181,34 +242,39 @@ class animator{
 			let es_movimiento_horizontal	= an.origen[0]-an.dest[0]==0;
 			let es_movimiento_vertical 		= an.origen[1]-an.dest[1]==0;
 
-			if (es_movimiento_horizontal){
-				target.classList.add("movement-X"+60*(an.origen[1]-an.dest[1]));
-				this.toRemove.push("movement-X"+60*(an.origen[1]-an.dest[1]))
-			} 	
-			if (es_movimiento_vertical){
-				target.classList.add("movement-Y"+60*(an.origen[0]-an.dest[0]));
-				this.toRemove.push("movement-Y"+60*(an.origen[0]-an.dest[0]));
-			}
+			if(an.bool == true)
+			{ target.classList.add("merge"); }
+
+			if (es_movimiento_horizontal)		
+			{ target.classList.add("movement-X"+60*(an.origen[1]-an.dest[1])); 	} 	
+
+			if (es_movimiento_vertical)	
+			{ target.classList.add("movement-Y"+60*(an.origen[0]-an.dest[0]));	}
 		});
 	}
 	clearAnimators(){
 		this._arrAnims = [];
-		console.table(this.toRemove)
-		this.toRemove.forEach(ele=>{
-			console.log("ele: ",ele)
-			document.getElementsByClassName(ele)[0].classList.remove(ele);
-		})
-		this.toRemove = [];
+		
+		let aux = document.querySelectorAll(".grid-block");
+		aux.forEach(ele=>ele.setAttribute("class","grid-block "+(ele.childNodes[0].innerText!=_nullValue?"v"+ele.childNodes[0].innerText:"na")))
 	}
 }
 class gameplay{
+	currScore = 6;
+	highScore = 0;
   	_GPTileSet = new tileSet();
   	target = document.getElementById("canvas");
 	resetBoard(){
 		this._GPTileSet = new tileSet();
 		this._GPTileSet.spawnTile();
 		this._GPTileSet.spawnTile();
+		console.table(this._GPTileSet.set);
 	};
+	addMergeScore(){
+		gp.currScore+=3;
+		painter.updateScore()
+
+	}
 	getMergeOffsetByKeyPressed(KeyPressed){
 		let offset = [0,0];
 		switch (KeyPressed) {
@@ -229,6 +295,13 @@ class gameplay{
 			break;
 		};
 		return offset;
+	};
+	winLoseCondition(){ 
+		if(document.querySelectorAll("div.v2048").length > "0" ) { 
+			_GameOverFlag=true;
+			painter.endOfGameModal(); 
+
+		};	
 	};
 	filterNullValuedSpotsByKeyPressed(KeyPressed,notNull){
 		let nullValuedSpots 	= this._GPTileSet.getNullValuedSpots();
@@ -259,36 +332,34 @@ class gameplay{
 	 */
 	procesarKey(notNullValuedSpots,KeyPressed){
 		let next = this.getMergeOffsetByKeyPressed(KeyPressed)
-		let aux ;
-		if(KeyPressed == "KeyD" || KeyPressed == "KeyS" )notNullValuedSpots.reverse();
+		let auxTile ;
+		if(KeyPressed == "KeyD" || KeyPressed == "KeyS" )	notNullValuedSpots.reverse();
 		notNullValuedSpots.forEach(notNull =>{
+
 			let path 		= this.filterNullValuedSpotsByKeyPressed(KeyPressed,notNull)
 			let borrower 	= new tile(notNull.position,_nullValue);
-				aux 		= notNull;
-
+			auxTile 		= notNull;
 			borrower.setIndex(notNull.getIndex());
 
-			if(path.length>0){
-				aux.updateAuxTileByKeyPressed(KeyPressed,path);
-				this._GPTileSet.replaceTile(aux);
-				robert.setAnimationArr(borrower.position,aux.position)
-
-				gp._GPTileSet.killTile(borrower);
+			if( 	this._GPTileSet.getTileByPosition(addPositions(auxTile.position,next))
+			&& 	this._GPTileSet.getTileByPosition(addPositions(auxTile.position,next)).value === auxTile.value ) 
+			{
+				this.mergeTiles(auxTile,next);
+				robert.setAnimationArr(auxTile.position, addPositions(auxTile.position,next,true));
+				gp.addMergeScore(); // each merge gives "3s"
 			}
-			if( 	this._GPTileSet.getTileByPosition(addPositions(aux.position,next))
-				&& 	this._GPTileSet.getTileByPosition(addPositions(aux.position,next)).value === aux.value ) {
-				this.mergeTiles(aux,next);
-				robert.setAnimationArr(aux.position,addPositions(aux.position,next));
+			if(path.length>0){
+				auxTile.updateAuxTileByKeyPressed(KeyPressed,path);
+				this._GPTileSet.replaceTile(auxTile);
+				robert.setAnimationArr(borrower.position,auxTile.position)
+				gp._GPTileSet.killTile(borrower);
 			}
 		})
 	}
 
 	ordernarSet(keyPressed)	{
-		crow2.addMensaje("Key Pressed: ",keyPressed);
-
 		let notNullValuedSpots 	= this._GPTileSet.getNotNullValuedSpots();
 		this.procesarKey(notNullValuedSpots,keyPressed);
-		simon.addMensaje("Resultado de adicion y ordenamiento",this._GPTileSet.set);
 	}
 	mergeTiles(tile,next){
 		let nextTile = this._GPTileSet.getTileByPosition( addPositions(tile.position,next) );
@@ -298,37 +369,42 @@ class gameplay{
 	}
 }
 
-let gp = new gameplay();
+/** debuging objects */
+let crow 	= new PlagueDoctor("Crow","Movimiento de tiles");
+let crow2 	= new PlagueDoctor("Crow2","Cosas especificas");
 
-let simon = new PlagueDoctor("Plague-Doctor","Cambios en el set");
-let crow = new PlagueDoctor("Crow","Movimiento de tiles");
-let crow2 = new PlagueDoctor("Crow2","Cosas especificas");
-
+let gp 		= new gameplay();
 let painter = new UI(gp._GPTileSet.set);
-let robert = new animator();
+let robert 	= new animator();
 
+function unFunctiont(){return};
+function runThisOnce(){
+	setInterval(()=>{	gp.score--;},1000);
+}
+let bool = true;
 window.addEventListener('load',()=>{
 	gp.resetBoard()
-	painter.updateSet(gp._GPTileSet.set)
-
+	painter.updateSet(gp._GPTileSet.set);
+	document.querySelector("#currScore>span").innerText = gp.currScore;
 })
 document.addEventListener('keydown',(event)=>{
+	
+	
 	let KeyCode = event.code;
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
 	if(isWASD && !_GameOverFlag){
-
-		// /*								*/simon.addMensaje("TableSet",gp._GPTileSet.set);
+		if(bool){setInterval(()=>{	gp.score--;},1000);}
+		
 		gp.ordernarSet(KeyCode);
 		gp._GPTileSet.spawnTile();
-		// /*								*/simon.addMensaje("Final de iteración",gp._GPTileSet.set);
-		// robert.batchAnimation();
-		painter.updateSet(gp._GPTileSet.set)
-		// setTimeout(()=>{painter.updateSet(gp._GPTileSet.set)},350)
-		// setTimeout(()=>{robert.clearAnimators();},350)
+		robert.batchAnimation();
+		setTimeout(()=>{
+			painter.updateSet(gp._GPTileSet.set)
+			robert.clearAnimators();
+		},200);
 		
-		
-	}
-	if(_GameOverFlag){
-		alert("GameOver")
+		setTimeout(()=>{
+			gp.winLoseCondition();
+		},400);
 	}
 })
