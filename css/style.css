@@ -1,4 +1,6 @@
-
+*{
+    user-select: none;
+}
 #block{
     background-color:   red;
     margin-left:        8px;

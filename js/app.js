@@ -167,9 +167,9 @@ class UI{
 	updateScore(){
 		let currScore = document.querySelector("#currScore>span");
 		let highScore = document.querySelector("#highScore>span");
-		currScore.innerText = gp.currScore;
-		if(currScore.innerText >= gp.highScore) gp.highScore = currScore.innerText
-		highScore.innerText = gp.highScore;
+		currScore.innerText = gp.getCurrScore();
+		highScore.innerText = gp.getHighScore();
+		if(currScore.innerText >= gp.getHighScore) gp.setHighScore(highScore.innerText);
 	};	
 	cerrarModal(){
 		document.getElementById("mlBody").parentElement.remove();
@@ -264,6 +264,13 @@ class gameplay{
 	highScore = 0;
   	_GPTileSet = new tileSet();
   	target = document.getElementById("canvas");
+	//GETTERs y SETTERs
+	getCurrScore(){return this.currScore};
+	getHighScore(){return this.highScore};
+	setCurrScore(n){this.currScore = n};
+	setHighScore(n){this.highScore = n};
+	
+
 	resetBoard(){
 		this._GPTileSet = new tileSet();
 		this._GPTileSet.spawnTile();
@@ -271,7 +278,7 @@ class gameplay{
 		console.table(this._GPTileSet.set);
 	};
 	addMergeScore(){
-		gp.currScore+=3;
+		gp.setCurrScore(gp.getCurrScore()+3);
 		painter.updateScore()
 
 	}
@@ -376,6 +383,8 @@ let crow2 	= new PlagueDoctor("Crow2","Cosas especificas");
 let gp 		= new gameplay();
 let painter = new UI(gp._GPTileSet.set);
 let robert 	= new animator();
+let hammerTime = new Hammer(document);
+
 
 function unFunctiont(){return};
 function runThisOnce(){
@@ -386,12 +395,11 @@ window.addEventListener('load',()=>{
 	gp.resetBoard()
 	painter.updateSet(gp._GPTileSet.set);
 	document.querySelector("#currScore>span").innerText = gp.currScore;
+	
 })
-document.addEventListener('keydown',(event)=>{
-	
-	
-	let KeyCode = event.code;
+function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
+
 	if(isWASD && !_GameOverFlag){
 		if(bool){setInterval(()=>{	gp.score--;},1000);}
 		
@@ -407,4 +415,41 @@ document.addEventListener('keydown',(event)=>{
 			gp.winLoseCondition();
 		},400);
 	}
+}
+document.addEventListener('keydown',(event)=>{
+	let KeyCode = event.code;
+	game_interaction(KeyCode);
 })
+
+// Enable vertical swipes
+hammerTime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
+hammerTime.on("swipe",function(ev){
+	ev.preventDefault()
+	let translatedKeyCode = "";
+	switch(ev.direction){
+		case Hammer.DIRECTION_LEFT:
+            console.log('Swiped left');
+			translatedKeyCode = "KeyA";
+            break;
+        case Hammer.DIRECTION_RIGHT:
+            console.log('Swiped right');
+			translatedKeyCode = "KeyD";
+
+            break;
+        case Hammer.DIRECTION_UP:
+            console.log('Swiped up');
+			translatedKeyCode = "KeyW";
+
+            break;
+        case Hammer.DIRECTION_DOWN:
+            console.log('Swiped down');
+			translatedKeyCode = "KeyS";
+
+            break;
+        default:
+            console.log('Unknown swipe direction');
+    }
+	game_interaction(translatedKeyCode)
+	
+});
