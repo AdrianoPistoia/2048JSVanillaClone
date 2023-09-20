@@ -1,17 +1,22 @@
 /**TO-DO List
- * hacerle Sort al array de los notNulledValues cuando se apreta "KeyD"
+ * front bonito
+ * guardar el highScore al finalizar el intento
  *
  */
 
-let _winningTexts = {"title":"Good Job!",
-					 "parr":"That took a while, huh! Remember to brag to your friend and coworkers your of your ingenius tactics from wich you got that score!",
-					 "btnReset":"Reset",
-					 "btnRank":"Rank your score!"};
+let _winningTexts 		= {	"title":"Good Job!",
+					 		"parr":"That took a while, huh! Remember to brag to your friend and coworkers your of your ingenius tactics from wich you got that score!",
+					 		"btnReset":"Reset",
+					 		"btnRank":"Rank your score!"};
 
-let _losingTexts = { "title":"Ups! Seems you lost...",
-					 "parr":"You see... every loss leaves a meaningful lesson, sometimes we have to learn to adapt and become better selfs, and sometimes we just suck. I mean ... the score is right there, dude. I don't mean this is an easy game, but people can suck in hardmode too...",
-					 "btnReset":"Reset"};
+let _losingTexts 		= { "title":"Ups! Seems you lost...",
+					 		"parr":"You see... every loss leaves a meaningful lesson, sometimes we have to learn to adapt and become better selfs, and sometimes we just suck. I mean ... the score is right there, dude. I don't mean this is an easy game, but people can suck in hardmode too...",
+					 		"btnReset":"Reset"};
 
+let _rankModalTexts 	= { "title":"Write your name!",
+							"parr":"Your name will be displayed along side you high score!",
+							"btnSubmitRank":"Submit Rank!"
+}
 let playerDom = document.getElementById("block");
 let intPropertyValue = (target,property) => {
 	return parseInt(window.getComputedStyle(target).getPropertyValue(property));
@@ -164,16 +169,16 @@ class UI{
 			this.target.appendChild(block)
 		})
 	};
+	updateHighScore(){
+		let highScore = document.querySelector("#currScore>span");
+		highScore = gp.setHighScore(document.querySelector("#currScore>span"));
+	}
 	updateScore(){
 		let currScore = document.querySelector("#currScore>span");
-		let highScore = document.querySelector("#highScore>span");
 		currScore.innerText = gp.getCurrScore();
-		highScore.innerText = gp.getHighScore();
-		if(currScore.innerText >= gp.getHighScore) gp.setHighScore(highScore.innerText);
 	};	
-	cerrarModal(){
-		document.getElementById("mlBody").parentElement.remove();
-	};
+	cerrarModal(){	document.getElementById("mlBody").parentElement.remove(); };
+
 	updateSet(set){
 		let blockGrid = document.querySelectorAll(".grid-block>p")
 		set.forEach(tile =>{
@@ -182,7 +187,51 @@ class UI{
 			blockGrid[tile.getIndex()].parentNode.classList.add("v"+(tile.getValue()!=_nullValue ? tile.getValue() : ""));
 		})
 	};
-	
+	rankingModal(){
+		let mlShadow 			= document.createElement("div");
+		let mlBody 				= document.createElement("div");
+		let mlTitle 			= document.createElement("h2");
+		let mlParagraph			= document.createElement("p");
+		let mlInput				= document.createElement("input");
+		let mlRankBtn			= document.createElement("button");
+		let mlCloseBtn			= document.createElement("button");
+		
+		mlTitle.innerText 		= _rankModalTexts.title;
+		mlParagraph.innerText	= _rankModalTexts.parr;
+		mlRankBtn.innerText		= _rankModalTexts.btnSubmitRank;
+		mlCloseBtn.innerText	= "X";
+
+		mlShadow.setAttribute("class","mlShadow");
+		mlInput.setAttribute("palceHolder","Ranking name!");
+		mlInput.setAttribute("id","mlInput");
+		mlBody.setAttribute("id","mlBody");
+		mlCloseBtn.setAttribute("id","btnCerrar");
+
+
+		mlCloseBtn.addEventListener("click",function(){
+			painter.cerrarModal();
+		})
+
+		mlRankBtn.addEventListener("click",function(){
+			const data = {rankName:mlInput.value, highScore:gp.getHighScore()}
+			localStorage.setItem("userData",JSON.stringify(data));
+			console.log(JSON.parse(localStorage.getItem('userData')));
+			painter.cerrarModal();
+
+		})
+
+		document.body.appendChild(mlShadow);
+		mlShadow.appendChild(mlBody);
+		mlBody.appendChild(mlTitle);
+		mlBody.appendChild(mlParagraph);
+		mlBody.appendChild(mlInput);
+		mlBody.appendChild(mlRankBtn);
+		mlBody.appendChild(mlCloseBtn);
+
+
+		
+
+	}
 	endOfGameModal(string){
 		let mlShadow 			= document.createElement("div");
 		let mlBody 				= document.createElement("div");
@@ -190,6 +239,7 @@ class UI{
 		let mlParagraph			= document.createElement("p");
 		let mlButtonsBar		= document.createElement("div");
 		let mlResetBtn			= document.createElement("button");
+		let mlRankBtn			= document.createElement("button");
 		
 		
 		mlTitle.innerText		= string == "win"? _winningTexts.title	: _losingTexts.title;
@@ -200,12 +250,7 @@ class UI{
 		mlShadow.setAttribute("class","mlShadow");
 		mlBody.setAttribute("id","mlBody");
 		
-		
 		mlResetBtn.addEventListener("click",function(){
-			/**
-			 * Resetear score, painter
-			 * Resetear tableSet GP
-			*/
 			painter.cerrarModal();
 			gp.resetBoard();
 			painter.updateSet(gp._GPTileSet.set);
@@ -220,8 +265,12 @@ class UI{
 		
 		if(string == "win"){
 			let mlRankBtn			= document.createElement("button");
-			mlRankBtn.innerText		= _winningTexts.btnReset;
-			mlRankBtn.addEventListener("clik",function(){painter.cerrarModal();});
+			mlRankBtn.innerText		= _winningTexts.btnRank;
+			mlRankBtn.addEventListener("click",function(){
+				painter.cerrarModal();
+				painter.rankingModal();
+			
+			});
 			mlButtonsBar.appendChild(mlRankBtn);
 		}
 	}
@@ -260,8 +309,8 @@ class animator{
 	}
 }
 class gameplay{
-	currScore = 6;
-	highScore = 0;
+	currScore = 0;
+	highScore = "Not Registered!";
   	_GPTileSet = new tileSet();
   	target = document.getElementById("canvas");
 	//GETTERs y SETTERs
@@ -270,7 +319,6 @@ class gameplay{
 	setCurrScore(n){this.currScore = n};
 	setHighScore(n){this.highScore = n};
 	
-
 	resetBoard(){
 		this._GPTileSet = new tileSet();
 		this._GPTileSet.spawnTile();
@@ -284,30 +332,22 @@ class gameplay{
 	getMergeOffsetByKeyPressed(KeyPressed){
 		let offset = [0,0];
 		switch (KeyPressed) {
-			case "KeyW":
-				offset = [-1,0];
-			break;
-			case "KeyS":
-				offset= [1,0]
-			break;
-			case "KeyA":
-				offset = [0,-1]
-			break;
-			case "KeyD":
-				offset = [0,1];
-			break;
-
+			case "KeyW":	offset = [-1,0];
+				break;
+			case "KeyS":	offset = [1,0]
+				break;
+			case "KeyA":	offset = [0,-1]
+				break;
+			case "KeyD":	offset = [0,1];
+				break;
 			default:
-			break;
+				break;
 		};
 		return offset;
 	};
 	winLoseCondition(){ 
-		if(document.querySelectorAll("div.v2048").length > "0" ) { 
-			_GameOverFlag=true;
-			painter.endOfGameModal(); 
-
-		};	
+		_GameOverFlag	=	true;
+		painter.endOfGameModal("win"); 
 	};
 	filterNullValuedSpotsByKeyPressed(KeyPressed,notNull){
 		let nullValuedSpots 	= this._GPTileSet.getNullValuedSpots();
@@ -385,10 +425,6 @@ let robert 		= new animator();
 let hammerTime 	= new Hammer(document);
 
 
-function unFunctiont(){return};
-function runThisOnce(){
-	setInterval(()=>{	gp.score--;},1000);
-}
 
 let inital_score_flag = true;
 
@@ -403,7 +439,19 @@ function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
 
 	if(isWASD && !_GameOverFlag){
-		if(inital_score_flag){setInterval(()=>{	gp.score--;},1000);}
+		// let id;
+		// if(document.querySelector("#currScore>span").innerText > 0){
+		// 	id = setInterval(()=>{	
+		// 		gp.currScore--;
+		// 		painter.updateScore()
+		// 		inital_score_flag = false;
+				
+		// 	},2000);
+		// }
+		// if(document.querySelector("#currScore>span").innerText <= 0 ){
+		// 	clearInterval(id);
+		// } 
+			
 		
 		gp.ordernarSet(KeyCode);
 		gp._GPTileSet.spawnTile();
@@ -413,9 +461,10 @@ function game_interaction(KeyCode){
 			robert.clearAnimators();
 		},200);
 		
-		setTimeout(()=>{
-			gp.winLoseCondition();
-		},400);
+		// let winLose = setTimeout(()=>{
+		// 	;
+		// },400);
+		if(_GameOverFlag || document.querySelectorAll("div.v2048").length > "0" ) gp.winLoseCondition(); 
 	}
 }
 document.addEventListener('keydown',(event)=>{
