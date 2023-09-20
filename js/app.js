@@ -275,7 +275,6 @@ class gameplay{
 		this._GPTileSet = new tileSet();
 		this._GPTileSet.spawnTile();
 		this._GPTileSet.spawnTile();
-		console.table(this._GPTileSet.set);
 	};
 	addMergeScore(){
 		gp.setCurrScore(gp.getCurrScore()+3);
@@ -377,31 +376,34 @@ class gameplay{
 }
 
 /** debuging objects */
-let crow 	= new PlagueDoctor("Crow","Movimiento de tiles");
-let crow2 	= new PlagueDoctor("Crow2","Cosas especificas");
+let crow 		= new PlagueDoctor("Crow","Movimiento de tiles");
+let crow2 		= new PlagueDoctor("Crow2","Cosas especificas");
 
-let gp 		= new gameplay();
-let painter = new UI(gp._GPTileSet.set);
-let robert 	= new animator();
-let hammerTime = new Hammer(document);
+let gp 			= new gameplay();
+let painter 	= new UI(gp._GPTileSet.set);
+let robert 		= new animator();
+let hammerTime 	= new Hammer(document);
 
 
 function unFunctiont(){return};
 function runThisOnce(){
 	setInterval(()=>{	gp.score--;},1000);
 }
-let bool = true;
+
+let inital_score_flag = true;
+
 window.addEventListener('load',()=>{
 	gp.resetBoard()
 	painter.updateSet(gp._GPTileSet.set);
 	document.querySelector("#currScore>span").innerText = gp.currScore;
 	
 })
+
 function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
 
 	if(isWASD && !_GameOverFlag){
-		if(bool){setInterval(()=>{	gp.score--;},1000);}
+		if(inital_score_flag){setInterval(()=>{	gp.score--;},1000);}
 		
 		gp.ordernarSet(KeyCode);
 		gp._GPTileSet.spawnTile();
@@ -422,34 +424,26 @@ document.addEventListener('keydown',(event)=>{
 })
 
 // Enable vertical swipes
-hammerTime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+hammerTime.get('swipe').set({ direction: Hammer.DIRECTION_ALL, inputClass: Hammer.TouchInput });
 
 hammerTime.on("swipe",function(ev){
-	ev.preventDefault()
+	ev.preventDefault();
 	let translatedKeyCode = "";
+
 	switch(ev.direction){
-		case Hammer.DIRECTION_LEFT:
-            console.log('Swiped left');
-			translatedKeyCode = "KeyA";
+		case Hammer.DIRECTION_LEFT:		translatedKeyCode = "KeyA";
             break;
-        case Hammer.DIRECTION_RIGHT:
-            console.log('Swiped right');
-			translatedKeyCode = "KeyD";
 
+        case Hammer.DIRECTION_RIGHT:	translatedKeyCode = "KeyD";
             break;
-        case Hammer.DIRECTION_UP:
-            console.log('Swiped up');
-			translatedKeyCode = "KeyW";
 
+        case Hammer.DIRECTION_UP: 		translatedKeyCode = "KeyW";
             break;
-        case Hammer.DIRECTION_DOWN:
-            console.log('Swiped down');
-			translatedKeyCode = "KeyS";
 
+        case Hammer.DIRECTION_DOWN:		translatedKeyCode = "KeyS";
             break;
-        default:
-            console.log('Unknown swipe direction');
+        default:						console.log('Unknown swipe direction');
     }
-	game_interaction(translatedKeyCode)
+	game_interaction(translatedKeyCode);
 	
 });
