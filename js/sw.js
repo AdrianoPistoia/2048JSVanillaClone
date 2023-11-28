@@ -1,71 +1,71 @@
+// const CACHE_NAME = 'devtools-tips-v3';
 
+// // list of requests whose responses will be pre-cached at install
+// const INITIAL_CACHED_RESOURCES = [
+//     '/',
+//     '/browser/chrome/',
+//     '/css/style.css',
+//     '/js/app.js',
+//     '/icons/consola.png',
+// ];
 
-const CACHE_NAME = '2048-clone';
-self.addEventListener('install', function (event) {
+const CACHE_NAME = 'my-app-cache-v1';
+
+self.addEventListener('install', (event) => {
   event.waitUntil(
-      caches.open(CACHE_NAME).then(function (cache) {
-          return cache.addAll([
-              '/',
-              '/index.html',
-              '/icons/consola.png',
-              '/css/style.css',
-              '/js/app.js',
-              '/js/hammer.js',
-              '/js/sw.js',
-              // Agregar más recursos que quieras que se almacenen en caché
-          ]);
-      })
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll([
+        '/',
+        // '/browser/chrome/',
+        '/css/style.css',
+        '/js/app.v1.js',
+        '/js/hammer.js',
+        '/js/sw.js',
+        '/js/swreg.js',
+        '/icons/consola.png',
+      ]);
+    })
   );
 });
 
-// Activación del Service Worker
-self.addEventListener('activate', function (event) {
-  //(chequear versionado) 
-  // Realizar acciones de limpieza si es necesario
-});
-
-// Intercepta las solicitudes y sirve desde el caché si está disponible
-self.addEventListener("fetch", (e) => {
-  const url = e.request.url;
-  console.log("pasp por el fetch");
-  const response =
-      fetch(e.request)
-          .then((res) => {
-            return caches.open(CACHE_NAME).then(cache => {
-                cache.put(e.request, res.clone());
-                return res;
-            })
-          })
-          .catch((err) => {
-              return caches.match(e.request);
-          })
-  e.respondWith(response);
-
-});
-
-
-
-self.addEventListener("fetch-cache-only", (e) => {
-  const url = e.request.url;
-  console.log("paso por aca o no?");
-
-  const cacheResponse = caches.match(e.request);
-
-  e.respondWith(cacheResponse);
-
-});
-
-self.addEventListener("fetch-and-network", (e) => {
-  const url = e.request.url;
-  console.log("paso por el fetch n net");
-
-  const cacheResponse = caches.match(e.request).then(response => {
-      if(!response) {
-          return fetch(e.request);
-      }
-      return response;
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        // If the request is in the cache, return the cached version
+        if (response) {
+          return response;
+        }
+  
+        // If not in cache, fetch it from the network
+        return fetch(event.request).then((response) => {
+          // Cache a copy of the response for future use
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+  
+          return response;
+        });
+      })
+    );
   });
-
-  e.respondWith(cacheResponse);
-
-});
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              // Delete old caches
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    );
+  });
+  
+  self.addEventListener('message', (event) => {
+    if (event.data.action === 'skipWaiting') {
+      self.skipWaiting();
+    }
+  });
