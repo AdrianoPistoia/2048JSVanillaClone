@@ -1,0 +1,24 @@
+{
+  "name": "2048jsvanillaclone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdrianoPistoia/2048JSVanillaClone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdrianoPistoia/2048JSVanillaClone/issues"
+  },
+  "homepage": "https://github.com/AdrianoPistoia/2048JSVanillaClone#readme",
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "openssl": "^2.0.0"
+  }
+}
