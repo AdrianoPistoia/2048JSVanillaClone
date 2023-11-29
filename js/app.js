@@ -494,7 +494,7 @@ document.addEventListener('keydown',(event)=>{
   	// Evento touchstart
   	touchElement.addEventListener('touchstart', function(event) {
     event.preventDefault();
-    console.log('Touch Start');
+    alert('Touch Start');
 
     // Guarda las coordenadas iniciales del toque
     startX = event.touches[0].clientX;
@@ -504,7 +504,7 @@ document.addEventListener('keydown',(event)=>{
   // Evento touchmove
   touchElement.addEventListener('touchmove', function(event) {
     event.preventDefault();
-    console.log('Touch Move');
+    alert('Touch Move');
 
     // Calcula la distancia horizontal y vertical del desplazamiento
     var deltaX = event.touches[0].clientX - startX;
@@ -513,15 +513,15 @@ document.addEventListener('keydown',(event)=>{
     // Determina la dirección basada en la distancia
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       if (deltaX > 0) {
-        console.log('Derecha');
+        alert('Derecha');
       } else {
-        console.log('Izquierda');
+        alert('Izquierda');
       }
     } else {
       if (deltaY > 0) {
-        console.log('Abajo');
+        alert('Abajo');
       } else {
-        console.log('Arriba');
+        alert('Arriba');
       }
     }
   });
