@@ -524,3 +524,6 @@ document.addEventListener('keydown',(event)=>{
       }
     }
   },{passive:true});
+  touchElement.addEventListener("touchend",function(event){
+	event.preventDefault();
+  })
