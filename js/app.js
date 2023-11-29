@@ -492,7 +492,7 @@ document.addEventListener('keydown',(event)=>{
 
   	// Evento touchstart
   	touchElement.addEventListener('touchstart', function(event) {
-    event.preventDefault();
+    // event.preventDefault();
     // alert('Touch Start');
 
     // Guarda las coordenadas iniciales del toque
@@ -502,7 +502,7 @@ document.addEventListener('keydown',(event)=>{
 
   // Evento touchmove
   touchElement.addEventListener('touchmove', function(event) {
-    event.preventDefault();
+    // event.preventDefault();
     // alert('Touch Move');
 
     // Calcula la distancia horizontal y vertical del desplazamiento
