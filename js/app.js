@@ -453,7 +453,7 @@ if(document.location.search == "?admin"){
 let gp 			= new gameplay();
 let painter 	= new UI(gp._GPTileSet.set);
 let robert 		= new animator();
-let hammerTime 	= new Hammer(document);
+// let hammerTime 	= new Hammer(document);
 
 
 let mobile_flag =window.display;
