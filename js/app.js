@@ -11,6 +11,8 @@ if ('serviceWorker' in navigator) {
       console.error('Service Worker registration failed:', error);
     });
 }
+
+
 let _winningTexts 		= {	"title":"Good Job!",
 					 		"parr":"That took a while, huh! Remember to brag to your friend and coworkers your of your ingenius tactics from wich you got that score!",
 					 		"btnReset":"Reset",
@@ -454,7 +456,7 @@ let robert 		= new animator();
 let hammerTime 	= new Hammer(document);
 
 
-
+let mobile_flag =window.display;
 let inital_score_flag = true;
 
 window.addEventListener('load',()=>{
@@ -468,19 +470,6 @@ function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
 
 	if(isWASD && !_GameOverFlag){
-		// let id;
-		// if(document.querySelector("#currScore>span").innerText > 0){
-		// 	id = setInterval(()=>{	
-		// 		gp.currScore--;
-		// 		painter.updateScore()
-		// 		inital_score_flag = false;
-				
-		// 	},2000);
-		// }
-		// if(document.querySelector("#currScore>span").innerText <= 0 ){
-		// 	clearInterval(id);
-		// } 
-			
 		
 		gp.ordernarSet(KeyCode);
 		gp._GPTileSet.spawnTile();
@@ -499,27 +488,40 @@ document.addEventListener('keydown',(event)=>{
 	game_interaction(KeyCode);
 })
 
-// Enable vertical swipes
-hammerTime.get('swipe').set({ direction: Hammer.DIRECTION_ALL, inputClass: Hammer.TouchInput });
+	var touchElement = document.getElementById('touchElement');	
+  	var startX, startY;
 
-hammerTime.on("swipe",function(ev){
-	ev.preventDefault();
-	let translatedKeyCode = "";
+  	// Evento touchstart
+  	touchElement.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    console.log('Touch Start');
 
-	switch(ev.direction){
-		case Hammer.DIRECTION_LEFT:		translatedKeyCode = "KeyA";
-            break;
+    // Guarda las coordenadas iniciales del toque
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+  });
 
-        case Hammer.DIRECTION_RIGHT:	translatedKeyCode = "KeyD";
-            break;
+  // Evento touchmove
+  touchElement.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+    console.log('Touch Move');
 
-        case Hammer.DIRECTION_UP: 		translatedKeyCode = "KeyW";
-            break;
+    // Calcula la distancia horizontal y vertical del desplazamiento
+    var deltaX = event.touches[0].clientX - startX;
+    var deltaY = event.touches[0].clientY - startY;
 
-        case Hammer.DIRECTION_DOWN:		translatedKeyCode = "KeyS";
-            break;
-        default:						console.log('Unknown swipe direction');
+    // Determina la dirección basada en la distancia
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX > 0) {
+        console.log('Derecha');
+      } else {
+        console.log('Izquierda');
+      }
+    } else {
+      if (deltaY > 0) {
+        console.log('Abajo');
+      } else {
+        console.log('Arriba');
+      }
     }
-	game_interaction(translatedKeyCode);
-	
-});
+  });
