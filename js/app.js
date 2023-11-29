@@ -488,40 +488,45 @@ document.addEventListener('keydown',(event)=>{
 	game_interaction(KeyCode);
 
 })
-
+	var moved = false;
 	var touchElement = document.getElementById('touchElement');	
   	var startX, startY, deltaX, deltaY;
   	// Evento touchstart
-  	touchElement.addEventListener('touchstart', function(event) {
+touchElement.addEventListener('touchstart', function(event) {
 
     // Guarda las coordenadas iniciales del toque
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
-  },{passive:true});
+},{passive:true});
 
   // Evento touchmove
-  touchElement.addEventListener('touchmove', function(event) {
-
+touchElement.addEventListener('touchmove', function(event) {
+	moved = true;
     // Calcula la distancia horizontal y vertical del desplazamiento
     deltaX = event.touches[0].clientX - startX;
     deltaY = event.touches[0].clientY - startY;
-
     // Determina la dirección basada en la distancia
+	console.log("deltaX_Y",Math.abs(deltaY) - Math.abs(deltaX) )
     
-  },{passive:true});
-  touchElement.addEventListener("touchend",function(event){
+},{passive:true});
+touchElement.addEventListener("touchend",function(event){
 	event.preventDefault();
-	if (Math.abs(deltaX) > Math.abs(deltaY)) {
-		if (deltaX > 0) {
-			game_interaction("KeyD")
+	console.log(moved)
+	if(moved){
+
+		if (Math.abs(deltaX) > Math.abs(deltaY)) {
+			if (deltaX > 0) {
+				game_interaction("KeyD")
+			} else {
+				game_interaction("KeyA")
+			}
 		} else {
-			game_interaction("KeyA")
-		}
-	  	} else {
-		if (deltaY > 0) {
-		  	game_interaction("KeyS")
-		} else {
-			game_interaction("KeyW")
+			if (deltaY > 0) {
+				game_interaction("KeyS")
+			} else {
+				game_interaction("KeyW")
+			}
 		}
 	}
+	moved = false;
 })
