@@ -467,7 +467,7 @@ window.addEventListener('load',()=>{
 
 function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
-
+	console.log("isWASD", isWASD)
 	if(isWASD && !_GameOverFlag){
 		
 		gp.ordernarSet(KeyCode);
@@ -484,12 +484,13 @@ function game_interaction(KeyCode){
 }
 document.addEventListener('keydown',(event)=>{
 	let KeyCode = event.code;
+	console.log(KeyCode)
 	game_interaction(KeyCode);
+
 })
 
 	var touchElement = document.getElementById('touchElement');	
-  	var startX, startY;
-
+  	var startX, startY, deltaX, deltaY;
   	// Evento touchstart
   	touchElement.addEventListener('touchstart', function(event) {
 
@@ -502,24 +503,25 @@ document.addEventListener('keydown',(event)=>{
   touchElement.addEventListener('touchmove', function(event) {
 
     // Calcula la distancia horizontal y vertical del desplazamiento
-    var deltaX = event.touches[0].clientX - startX;
-    var deltaY = event.touches[0].clientY - startY;
+    deltaX = event.touches[0].clientX - startX;
+    deltaY = event.touches[0].clientY - startY;
 
     // Determina la dirección basada en la distancia
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > 0) {
-        game_interaction("keyD")
-      } else {
-        game_interaction("keyA")
-      }
-    } else {
-      if (deltaY > 0) {
-        game_interaction("keyS")
-      } else {
-        game_interaction("keyW")
-      }
-    }
+    
   },{passive:true});
   touchElement.addEventListener("touchend",function(event){
 	event.preventDefault();
-  })
+	if (Math.abs(deltaX) > Math.abs(deltaY)) {
+		if (deltaX > 0) {
+			game_interaction("KeyD")
+		} else {
+			game_interaction("KeyA")
+		}
+	  	} else {
+		if (deltaY > 0) {
+		  	game_interaction("KeyS")
+		} else {
+			game_interaction("KeyW")
+		}
+	}
+})
