@@ -498,7 +498,7 @@ document.addEventListener('keydown',(event)=>{
     // Guarda las coordenadas iniciales del toque
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
-  });
+  },{passive:true});
 
   // Evento touchmove
   touchElement.addEventListener('touchmove', function(event) {
@@ -521,7 +521,6 @@ document.addEventListener('keydown',(event)=>{
         game_interaction("keyS")
       } else {
         game_interaction("keyW")
-
       }
     }
-  });
+  },{passive:true});
