@@ -459,6 +459,14 @@ let mobile_flag =window.display;
 let inital_score_flag = true;
 
 window.addEventListener('load',()=>{
+	console.log("Es mobile?: ",'ontouchstart' in window)
+	if('ontouchstart' in window){
+		document.getElementById("ELSE").classList.toggle("d-none")
+		document.getElementById("ELSE").classList.toggle("d-flex")
+	}else{
+		document.getElementById("PC").classList.toggle("d-none")
+		document.getElementById("PC").classList.toggle("d-flex")
+	}
 	gp.resetBoard()
 	painter.updateSet(gp._GPTileSet.set);
 	document.querySelector("#currScore>span").innerText = gp.currScore;
