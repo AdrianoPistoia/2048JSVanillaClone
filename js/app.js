@@ -4,8 +4,7 @@
  *
  */
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/js/sw.js').then(function(registration) {
-		console.log("cache name: ",caches.open)
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
       console.log('Service Worker registered with scope:', registration.scope);
     }).catch(function(error) {
       console.error('Service Worker registration failed:', error);
@@ -443,7 +442,6 @@ class gameplay{
 		this._GPTileSet.killTile(tile);
 	}
 }
-// console.log(document.location.search)
 if(document.location.search == "?admin"){
 	/** debuging objects */
 	let crow 		= new PlagueDoctor("Crow","Movimiento de tiles");
@@ -459,7 +457,6 @@ let mobile_flag =window.display;
 let inital_score_flag = true;
 
 window.addEventListener('load',()=>{
-	console.log("Es mobile?: ",'ontouchstart' in window)
 	if('ontouchstart' in window){
 		document.getElementById("ELSE").classList.toggle("d-none")
 		document.getElementById("ELSE").classList.toggle("d-flex")
@@ -475,7 +472,6 @@ window.addEventListener('load',()=>{
 
 function game_interaction(KeyCode){
 	let isWASD = (KeyCode == "KeyD" || KeyCode == "KeyW" || KeyCode == "KeyS" || KeyCode == "KeyA")
-	console.log("isWASD", isWASD)
 	if(isWASD && !_GameOverFlag){
 		
 		gp.ordernarSet(KeyCode);
@@ -492,7 +488,6 @@ function game_interaction(KeyCode){
 }
 document.addEventListener('keydown',(event)=>{
 	let KeyCode = event.code;
-	console.log(KeyCode)
 	game_interaction(KeyCode);
 
 })
@@ -514,12 +509,10 @@ touchElement.addEventListener('touchmove', function(event) {
     deltaX = event.touches[0].clientX - startX;
     deltaY = event.touches[0].clientY - startY;
     // Determina la dirección basada en la distancia
-	console.log("deltaX_Y",Math.abs(deltaY) - Math.abs(deltaX) )
     
 },{passive:true});
 touchElement.addEventListener("touchend",function(event){
 	event.preventDefault();
-	console.log(moved)
 	if(moved){
 
 		if (Math.abs(deltaX) > Math.abs(deltaY)) {

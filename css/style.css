@@ -90,8 +90,8 @@ body{
     overflow:           hidden;
     display:            flex;
     z-index:            0;
-    height:             400px;
-    width:              400px;
+    height:             410px;
+    width:              410px;
 }
 
 .grid-block{
