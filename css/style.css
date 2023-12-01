@@ -3,6 +3,46 @@
     user-select:        none;
     font-family:        Verdana, Geneva, Tahoma, sans-serif;
 }
+#Tutorial{
+    background-color:   rgba(108, 108, 250, 0.9);
+    border-radius:      5px;
+    box-sizing:         border-box;
+    position:           absolute;
+    border:             1px black solid;
+    height:             30px;
+    right:              5%;
+    width:              30px;
+    top:                5%;
+    
+    word-wrap: break-word;
+    overflow: hidden;
+    transition: width 0.8s ease-in-out,
+    height 0.8s cubic-bezier(1,.39,.6,-0.61),
+    border-radius 0.8s cubic-bezier(1,.39,.6,-0.61);
+
+    font-size: larger;
+    font-weight: bolder;
+}
+.modalize{
+    border-radius:      15px !important;
+    display:            flex !important;
+    height:             80vh !important;
+    width:              80vw !important;
+    left:               10% !important;
+    top:                10% !important;
+    /* right: ; */
+}
+img.hide{
+    display:            none !important;
+}
+:not(img.hide)~#PC,:not(img.hide)~#ELSE{
+    display: none !important;
+}
+.transition-out{
+    transition: width 0.8s ease-in-out,
+                height 0.8s cubic-bezier(1,.39,.6,-0.61),
+                border-radius 0.8s cubic-bezier(.23,.78,0,1.04) !important;
+}
 #block{
     background-color:   red;
     margin-left:        8px;

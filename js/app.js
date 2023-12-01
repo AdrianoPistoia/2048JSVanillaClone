@@ -15,7 +15,6 @@ function insertAfter(referenceNode, newNode) {
 	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-
 let _winningTexts = {
 	"title": "Good Job!",
 	"parr": "That took a while, huh! Remember to brag to your friend and coworkers your of your ingenius tactics from wich you got that score!",
@@ -58,7 +57,7 @@ var startX, startY, deltaX, deltaY;
 
 
 let _nullValue = "na";
-let _Direccion = ["KeyW", "KeyA", "KeyS", "KeyD"];
+// let _Direccion = ["KeyW", "KeyA", "KeyS", "KeyD"];
 // NO USADO AUN
 let _setYOffset = 4;
 let _GameOverFlag = false;
@@ -198,6 +197,26 @@ class UI {
 	block = document.createElement("div");
 	constructor(set) {
 
+		let PC 		= document.getElementById("PC")
+		let ELSE 	= document.getElementById("ELSE")
+		let Tut		= document.getElementById("Tutorial");
+		let img		= document.querySelector("#Tutorial img")
+		let i = 0;
+
+		Tut.addEventListener("click",function(){
+			i++
+			Tut.classList.toggle("modalize")
+			PC.classList.toggle("d-none")
+			ELSE.classList.toggle("d-none")
+			PC.classList.toggle("d-flex")
+			ELSE.classList.toggle("d-flex")
+
+			setTimeout(function(){
+				img.classList.toggle("hide")
+				Tut.classList.toggle("transition-out");
+			},800);
+			Tut.classList.toggle("transition-out");
+		})
 
 		this.grid_table = document.createElement("div");
 		this.grid_table.setAttribute("class", "grid-table");
@@ -219,33 +238,23 @@ class UI {
 		})
 
 	};
-	/**
-	 * 
-	 * @param {JSON} data 
-	 */
+
 	pushRanking(data) {
 		console.log(data)
 		let leaderBoard = document.getElementById("Ranking");
-		// data.forEach(rank=>{
-
-		// 	let p 			= document.createElement("p");
-		// 	let span 		= document.createElement("span");
-
-		// 	p.innerText 	= data.rankName;
-		// 	span.innerText 	= data.highScore;
-
-		// 	leaderBoard.appendChild(p);
-		// 	p.appendChild(span);
-		// })
-
 	}
 	updateHighScore() {
-		let highScore = document.querySelector("#currScore>span");
-		highScore = gp.setHighScore(document.querySelector("#currScore>span"));
+		let highScore = document.querySelector("#highScore>span");
+		highScore.textContent = JSON.parse(localStorage.getItem("userData")).highScore
 	}
+
 	updateScore() {
 		let currScore = document.querySelector("#currScore>span");
 		currScore.innerText = gp.getCurrScore();
+		let highScore = document.querySelector("#highScore>span");
+		if(highScore<currScore){
+			gp.setHighScore(currScore.innerText);
+		} 
 	};
 	cerrarModal() { document.getElementById("mlBody").parentElement.remove(); };
 
@@ -258,18 +267,18 @@ class UI {
 		})
 	};
 	rankingModal() {
-		let mlShadow = document.createElement("div");
-		let mlBody = document.createElement("div");
-		let mlTitle = document.createElement("h2");
-		let mlParagraph = document.createElement("p");
-		let mlInput = document.createElement("input");
-		let mlRankBtn = document.createElement("button");
-		let mlCloseBtn = document.createElement("button");
+		let mlShadow 				= document.createElement("div");
+		let mlBody 					= document.createElement("div");
+		let mlTitle 				= document.createElement("h2");
+		let mlParagraph 			= document.createElement("p");
+		let mlInput 				= document.createElement("input");
+		let mlRankBtn 				= document.createElement("button");
+		let mlCloseBtn 				= document.createElement("button");
 
-		mlTitle.innerText = _rankModalTexts.title;
-		mlParagraph.innerText = _rankModalTexts.parr;
-		mlRankBtn.innerText = _rankModalTexts.btnSubmitRank;
-		mlCloseBtn.innerText = "X";
+		mlTitle.innerText 			= _rankModalTexts.title;
+		mlParagraph.innerText 		= _rankModalTexts.parr;
+		mlRankBtn.innerText	 		= _rankModalTexts.btnSubmitRank;
+		mlCloseBtn.innerText 		= "X";
 
 		mlShadow.setAttribute("class", "mlShadow");
 		mlInput.setAttribute("palceHolder", "Ranking name!");
@@ -279,18 +288,26 @@ class UI {
 
 
 		mlCloseBtn.addEventListener("click", function () {
+			gp.resetBoard();
+			painter.updateSet(gp._GPTileSet.set);
+			gp.resetScore();
+			painter.updateHighScore();
+			_GameOverFlag 	= false;
 			painter.cerrarModal();
 		})
-
+		
 		mlRankBtn.addEventListener("click", function () {
-			const data = { rankName: mlInput.value, highScore: gp.getHighScore() }
+			const data = { rankName: mlInput.value, highScore: gp.getCurrScore() }
 			localStorage.setItem("userData", JSON.stringify(data));
-			console.log(JSON.parse(localStorage.getItem('userData')));
 			painter.pushRanking(localStorage.getItem('userData'));
+			gp.resetBoard();
+			gp.resetScore();
+			painter.updateHighScore();
 			painter.updateSet(gp._GPTileSet.set);
 			painter.cerrarModal();
-
+			_GameOverFlag = false;
 		})
+
 
 		document.body.appendChild(mlShadow);
 		mlShadow.appendChild(mlBody);
@@ -301,19 +318,19 @@ class UI {
 		mlBody.appendChild(mlCloseBtn);
 
 	}
-	endOfGameModal(string) {
-		let mlShadow = document.createElement("div");
-		let mlBody = document.createElement("div");
-		let mlTitle = document.createElement("h2");
-		let mlParagraph = document.createElement("p");
-		let mlButtonsBar = document.createElement("div");
-		let mlResetBtn = document.createElement("button");
-		let mlRankBtn = document.createElement("button");
+	endOfGameModal(won_lost) {
+		let mlShadow 		= document.createElement("div");
+		let mlBody 			= document.createElement("div");
+		let mlTitle 		= document.createElement("h2");
+		let mlParagraph 	= document.createElement("p");
+		let mlButtonsBar 	= document.createElement("div");
+		let mlResetBtn 		= document.createElement("button");
+		let mlRankBtn 		= document.createElement("button");
 
 
-		mlTitle.innerText = string == "win" ? _winningTexts.title : _losingTexts.title;
-		mlParagraph.innerText = string == "win" ? _winningTexts.parr : _losingTexts.parr;
-		mlResetBtn.innerText = _winningTexts.btnReset; // just says reset (gatta move this to a "_generalTexts" or smth)
+		mlTitle.innerText 		= won_lost ? _winningTexts.title 	: _losingTexts.title;
+		mlParagraph.innerText 	= won_lost ? _winningTexts.parr 	: _losingTexts.parr;
+		mlResetBtn.innerText 	= _winningTexts.btnReset; // just says reset (gatta move this to a "_generalTexts" or smth)
 
 		mlButtonsBar.setAttribute("id", "mlBtnBar");
 		mlShadow.setAttribute("class", "mlShadow");
@@ -322,7 +339,10 @@ class UI {
 		mlResetBtn.addEventListener("click", function () {
 			painter.cerrarModal();
 			gp.resetBoard();
+			gp.resetScore();
+			painter.updateHighScore();
 			painter.updateSet(gp._GPTileSet.set);
+			_GameOverFlag = false;
 		})
 
 		document.body.appendChild(mlShadow);
@@ -332,13 +352,12 @@ class UI {
 		mlBody.appendChild(mlButtonsBar);
 		mlButtonsBar.appendChild(mlResetBtn);
 
-		if (string == "win") {
-			let mlRankBtn = document.createElement("button");
+		if(document.querySelector("#currScore>span").textContent > document.querySelector("#highScore>span").textContent){
 			mlRankBtn.innerText = _winningTexts.btnRank;
 			mlRankBtn.addEventListener("click", function () {
+				
 				painter.cerrarModal();
 				painter.rankingModal();
-
 			});
 			mlButtonsBar.appendChild(mlRankBtn);
 		}
@@ -361,30 +380,32 @@ class animator {
 			let es_movimiento_vertical = an.origen[1] - an.dest[1] == 0;
 
 			if (an.bool == true) { target.classList.add("merge"); }
-
 			if (es_movimiento_horizontal) { target.classList.add("movement-X" + 60 * (an.origen[1] - an.dest[1])); }
-
 			if (es_movimiento_vertical) { target.classList.add("movement-Y" + 60 * (an.origen[0] - an.dest[0])); }
 		});
 	}
 	clearAnimators() {
 		this._arrAnims = [];
-
 		let aux = document.querySelectorAll(".grid-block");
 		aux.forEach(ele => ele.setAttribute("class", "grid-block " + (ele.childNodes[0].innerText != _nullValue ? "v" + ele.childNodes[0].innerText : "na")))
 	}
 }
 class gameplay {
-	currScore = 0;
-	highScore = "Not Registered!";
-	_GPTileSet = new tileSet();
-	target = document.getElementById("canvas");
+	currScore 	= 0;
+	highScore 	= JSON.parse(localStorage.getItem("userData")).highScore;
+	_GPTileSet 	= new tileSet();
+	target 		= document.getElementById("canvas");
+
 	//GETTERs y SETTERs
 	getCurrScore() { return this.currScore };
 	getHighScore() { return this.highScore };
 	setCurrScore(n) { this.currScore = n };
 	setHighScore(n) { this.highScore = n };
-
+	resetScore(){
+		let currScore = document.querySelector("#currScore>span");
+		currScore.innerText = 0;
+		this.currScore = 0;
+	}
 	resetBoard() {
 		this._GPTileSet = new tileSet();
 		this._GPTileSet.spawnTile();
@@ -393,7 +414,6 @@ class gameplay {
 	addMergeScore() {
 		gp.setCurrScore(gp.getCurrScore() + 3);
 		painter.updateScore()
-
 	}
 	getMergeOffsetByKeyPressed(KeyPressed) {
 		let offset = [0, 0];
@@ -411,9 +431,9 @@ class gameplay {
 		};
 		return offset;
 	};
-	winLoseCondition() {
+	winLoseCondition(won_lost) {
 		_GameOverFlag = true;
-		painter.endOfGameModal("win");
+		painter.endOfGameModal(won_lost);
 	};
 	filterNullValuedSpotsByKeyPressed(KeyPressed, notNull) {
 		let nullValuedSpots = this._GPTileSet.getNullValuedSpots();
@@ -443,14 +463,14 @@ class gameplay {
 	 * @param {String} KeyPressed
 	 */
 	procesarKey(notNullValuedSpots, KeyPressed) {
-		let next = this.getMergeOffsetByKeyPressed(KeyPressed)
+		let next 		= this.getMergeOffsetByKeyPressed(KeyPressed)
 		let auxTile;
 		if (KeyPressed == "KeyD" || KeyPressed == "KeyS") notNullValuedSpots.reverse();
 		notNullValuedSpots.forEach(notNull => {
 
-			let path = this.filterNullValuedSpotsByKeyPressed(KeyPressed, notNull)
-			let borrower = new tile(notNull.position, _nullValue);
-			auxTile = notNull;
+			let path 		= this.filterNullValuedSpotsByKeyPressed(KeyPressed, notNull)
+			let borrower 	= new tile(notNull.position, _nullValue);
+			auxTile 		= notNull;
 			borrower.setIndex(notNull.getIndex());
 
 			if (this._GPTileSet.getTileByPosition(addPositions(auxTile.position, next))
@@ -467,7 +487,6 @@ class gameplay {
 			}
 		})
 	}
-
 	ordernarSet(keyPressed) {
 		let notNullValuedSpots = this._GPTileSet.getNotNullValuedSpots();
 		this.procesarKey(notNullValuedSpots, keyPressed);
@@ -494,15 +513,15 @@ if (document.location.search == "?admin") {
 
 // ciclo principal
 window.addEventListener('load', () => {
-	let Mobile = document.getElementById("ELSE").classList;
-	let PC = document.getElementById("PC").classList;
-	if ('ontouchstart' in window) {
-		Mobile.toggle("d-none")
-		Mobile.toggle("d-flex")
-	} else {
-		PC.toggle("d-none")
-		PC.toggle("d-flex")
-	}
+	// let Mobile = document.getElementById("ELSE").classList;
+	// let PC = document.getElementById("PC").classList;
+	// if ('ontouchstart' in window) {
+	// 	Mobile.toggle("d-none")
+	// 	Mobile.toggle("d-flex")
+	// } else {
+	// 	PC.toggle("d-none")
+	// 	PC.toggle("d-flex")
+	// }
 	gp.resetBoard()
 	painter.updateSet(gp._GPTileSet.set);
 	document.querySelector("#currScore>span").innerText = gp.currScore;
@@ -569,6 +588,9 @@ function game_interaction(KeyCode) {
 			robert.clearAnimators();
 		}, 200);
 
-		if (_GameOverFlag || document.querySelectorAll("div.v2048").length > "0") gp.winLoseCondition(); //<--!! chequear si funciona JAJA
+		if (_GameOverFlag) {
+			let won_lost = document.querySelectorAll("div.v2048").length > 0;
+			gp.winLoseCondition(won_lost); //<--!! chequear si funciona JAJA
+		}
 	}
 }
