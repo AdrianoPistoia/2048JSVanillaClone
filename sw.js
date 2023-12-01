@@ -49,17 +49,13 @@ self.addEventListener('fetch', function (event) {
 });
 
 self.addEventListener("fetch-cache-only", (e) => {
-  const url = e.request.url;
-  console.log("paso por aca o no?");
+  // const url = e.request.url;
   const cacheResponse = caches.match(e.request);
   e.respondWith(cacheResponse);
-
 });
 
 self.addEventListener("fetch-and-network", (e) => {
-  const url = e.request.url;
-  console.log("paso por el fetch n net");
-
+  // const url = e.request.url;
   const cacheResponse = caches.match(e.request).then(response => {
     if (!response) {
       return fetch(e.request);
