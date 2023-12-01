@@ -201,10 +201,8 @@ class UI {
 		let ELSE 	= document.getElementById("ELSE")
 		let Tut		= document.getElementById("Tutorial");
 		let img		= document.querySelector("#Tutorial img")
-		let i = 0;
 
 		Tut.addEventListener("click",function(){
-			i++
 			Tut.classList.toggle("modalize")
 			PC.classList.toggle("d-none")
 			ELSE.classList.toggle("d-none")
@@ -227,7 +225,7 @@ class UI {
 
 		this.grid_table.appendChild(canvas);
 		insertAfter(score, this.grid_table);
-
+		document.querySelector("#highScore>span").textContent = localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).highScore : "N/A";
 		set.forEach(t => {
 			let blockNumber = document.createElement("p");
 			let block = document.createElement("div");
@@ -498,8 +496,6 @@ class gameplay {
 		this._GPTileSet.killTile(tile);
 	}
 }
-
-
 
 
 let gp = new gameplay();
