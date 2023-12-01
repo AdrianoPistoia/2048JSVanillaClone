@@ -23,6 +23,30 @@
     font-size: larger;
     font-weight: bolder;
 }
+#Ranking{
+    background-color:   rgba(108, 108, 250, 0.9);
+    border-radius:      5px;
+    box-sizing:         border-box;
+    position:           absolute;
+    border:             1px black solid;
+    height:             30px;
+    right:              5%;
+    width:              30px;
+    top:                10%;
+    
+    word-wrap: break-word;
+    overflow: hidden;
+    transition: width 0.8s ease-in-out,
+    height 0.8s cubic-bezier(1,.39,.6,-0.61),
+    border-radius 0.8s cubic-bezier(1,.39,.6,-0.61);
+
+    font-size: larger;
+    font-weight: bolder;
+}
+#Ranking img{
+    max-width: 104px;
+    max-height: 104px;
+}
 .modalize{
     border-radius:      15px !important;
     display:            flex !important;
@@ -232,7 +256,7 @@ h1>span{
     width:              12rem;
 }
 
-#Ranking{
+/* #Ranking{
     background-color:   rgb(0, 0, 0);
     border-radius:      10px;
     text-align:         center;
@@ -264,7 +288,7 @@ h1>span{
     font-weight:        bolder;
     font-size:          x-large;
     color:              rgba(240, 240, 240, 0.6);
-}
+} */
 #btnCerrar{
     background-color:   red;
     border-radius:      50% 50%;

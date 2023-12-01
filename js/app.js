@@ -196,13 +196,17 @@ class UI {
 	score = document.querySelector("#score");
 	block = document.createElement("div");
 	constructor(set) {
+		function f_leaderBoard(){
+			Rank.classList.toggle("modalize")
+			R_div.classList.toggle("d-none")
+			R_div.classList.toggle("d-flex")
 
-		let PC 		= document.getElementById("PC")
-		let ELSE 	= document.getElementById("ELSE")
-		let Tut		= document.getElementById("Tutorial");
-		let img		= document.querySelector("#Tutorial img")
-
-		Tut.addEventListener("click",function(){
+			setTimeout(function(){
+				Rico.classList.toggle("hide")
+				Rank.classList.toggle("transition-out");
+			},800);
+		}
+		function f_info(){
 			Tut.classList.toggle("modalize")
 			PC.classList.toggle("d-none")
 			ELSE.classList.toggle("d-none")
@@ -214,7 +218,17 @@ class UI {
 				Tut.classList.toggle("transition-out");
 			},800);
 			Tut.classList.toggle("transition-out");
-		})
+		}
+		let PC 		= document.getElementById("PC")
+		let ELSE 	= document.getElementById("ELSE")
+		let Tut		= document.getElementById("Tutorial");
+		let img		= document.querySelector("#Tutorial img")
+		let Rank	= document.getElementById("Ranking");
+		let R_div	= document.querySelector("#Ranking>div")
+		let Rico	= document.querySelector("#Ranking>img");
+		
+		Rank.addEventListener("click",f_leaderBoard)
+		Tut.addEventListener("click",f_info)
 
 		this.grid_table = document.createElement("div");
 		this.grid_table.setAttribute("class", "grid-table");
@@ -225,7 +239,11 @@ class UI {
 
 		this.grid_table.appendChild(canvas);
 		insertAfter(score, this.grid_table);
-		document.querySelector("#highScore>span").textContent = localStorage.getItem("userData") ?  JSON.parse(localStorage.getItem("userData")).highScore : "N/A";
+		document.querySelector("#highScore>span").textContent = 
+			localStorage.getItem("userData") ?  
+			JSON.parse(localStorage.getItem("userData")).highScore : 
+			"N/A";
+			
 		set.forEach(t => {
 			let blockNumber = document.createElement("p");
 			let block = document.createElement("div");
@@ -237,15 +255,31 @@ class UI {
 
 	};
 
-	pushRanking(data) {
-		console.log(data)
-		let leaderBoard = document.getElementById("Ranking");
-	}
+	// pushRanking(data) {
+	// 	console.log(data)
+	// 	let leaderBoard = document.getElementById("Ranking");
+	// }
 	updateHighScore() {
 		let highScore = document.querySelector("#highScore>span");
-		highScore.textContent = JSON.parse(localStorage.getItem("userData")).highScore
+		let aux = JSON.parse(localStorage.getItem("userData"));
+		
 	}
-
+	findKeyWithHighestValue() {
+		let itemWithHighestValue = null;
+		let userData = JSON.parse(localStorage.getItem("userData"));
+		console.log("userData: ",userData)
+		for (let i = 0; i < userData.length; i++) {
+			let value = parseFloat(userData[i].highScore);
+			console.log("item: ",userData[i])
+			
+		  	if (!isNaN(value) && value > highestValue) {
+				highestValue = value;
+				itemWithHighestValue = userData[i];
+		  	}
+		}
+		return itemWithHighestValue;
+	  }
+	  
 	updateScore() {
 		let currScore = document.querySelector("#currScore>span");
 		currScore.innerText = gp.getCurrScore();
@@ -296,8 +330,28 @@ class UI {
 		
 		mlRankBtn.addEventListener("click", function () {
 			const data = { rankName: mlInput.value, highScore: gp.getCurrScore() }
-			localStorage.setItem("userData", JSON.stringify(data));
-			painter.pushRanking(localStorage.getItem('userData'));
+
+			let LSAux = [];
+			
+			if( localStorage.getItem("userData") ){ // si existe 
+				if(localStorage.getItem("userData").length > 1){ // y ya contiene multiples objetos
+					LSAux.push(JSON.parse(localStorage.getItem("userData")));  
+					LSAux.push(data);//hace una carga normal
+				}else{ //si existe y no es mayor a 1
+					LSAux = [];//convertimos a LSAux en un array
+					LSAux.push(JSON.parse(localStorage.getItem("userData")));
+					LSAux.push(data);
+					// y creamos la estructura para las siguientes adiciones
+				}
+			} else { //si no existe, hacemos una carga simple
+				LSAux=data;
+			};
+			localStorage.setItem("userData", JSON.stringify(LSAux));
+			
+			
+			
+			console.log("data: ",data)
+			console.log("LSAux: ",LSAux)
 			gp.resetBoard();
 			gp.resetScore();
 			painter.updateHighScore();
@@ -350,7 +404,7 @@ class UI {
 		mlBody.appendChild(mlButtonsBar);
 		mlButtonsBar.appendChild(mlResetBtn);
 
-		if(document.querySelector("#currScore>span").textContent > document.querySelector("#highScore>span").textContent){
+		// if(document.querySelector("#currScore>span").textContent > document.querySelector("#highScore>span").textContent){
 			mlRankBtn.innerText = _winningTexts.btnRank;
 			mlRankBtn.addEventListener("click", function () {
 				
@@ -358,7 +412,7 @@ class UI {
 				painter.rankingModal();
 			});
 			mlButtonsBar.appendChild(mlRankBtn);
-		}
+		// }
 	}
 };
 class animator {
@@ -390,7 +444,7 @@ class animator {
 }
 class gameplay {
 	currScore 	= 0;
-	highScore 	= JSON.parse(localStorage.getItem("userData")).highScore;
+	// highScore 	= JSON.parse(localStorage.getItem("userData")).highScore;
 	_GPTileSet 	= new tileSet();
 	target 		= document.getElementById("canvas");
 
