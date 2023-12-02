@@ -16,9 +16,9 @@
     
     word-wrap: break-word;
     overflow: hidden;
-    transition: width 0.8s ease-in-out,
-    height 0.8s cubic-bezier(1,.39,.6,-0.61),
-    border-radius 0.8s cubic-bezier(1,.39,.6,-0.61);
+    transition: width 0.4s ease-in-out,
+    height 0.4s cubic-bezier(1,.39,.6,-0.61),
+    border-radius 0.4s cubic-bezier(1,.39,.6,-0.61);
 
     font-size: larger;
     font-weight: bolder;
@@ -36,9 +36,9 @@
     
     word-wrap: break-word;
     overflow: hidden;
-    transition: width 0.8s ease-in-out,
-    height 0.8s cubic-bezier(1,.39,.6,-0.61),
-    border-radius 0.8s cubic-bezier(1,.39,.6,-0.61);
+    transition: width 0.4s ease-in-out,
+    height 0.4s cubic-bezier(1,.39,.6,-0.61),
+    border-radius 0.4s cubic-bezier(1,.39,.6,-0.61);
 
     font-size: larger;
     font-weight: bolder;
@@ -63,9 +63,9 @@ img.hide{
     display: none !important;
 }
 .transition-out{
-    transition: width 0.8s ease-in-out,
-                height 0.8s cubic-bezier(1,.39,.6,-0.61),
-                border-radius 0.8s cubic-bezier(.23,.78,0,1.04) !important;
+    transition: width 0.4s ease-in-out,
+                height 0.4s cubic-bezier(1,.39,.6,-0.61),
+                border-radius 0.4s cubic-bezier(.23,.78,0,1.04) !important;
 }
 #block{
     background-color:   red;

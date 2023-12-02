@@ -200,11 +200,12 @@ class UI {
 			Rank.classList.toggle("modalize")
 			R_div.classList.toggle("d-none")
 			R_div.classList.toggle("d-flex")
-
+			
 			setTimeout(function(){
 				Rico.classList.toggle("hide")
 				Rank.classList.toggle("transition-out");
-			},800);
+			},200);
+			
 		}
 		function f_info(){
 			Tut.classList.toggle("modalize")
@@ -212,11 +213,11 @@ class UI {
 			ELSE.classList.toggle("d-none")
 			PC.classList.toggle("d-flex")
 			ELSE.classList.toggle("d-flex")
-
+			
 			setTimeout(function(){
 				img.classList.toggle("hide")
 				Tut.classList.toggle("transition-out");
-			},800);
+			},200);
 			Tut.classList.toggle("transition-out");
 		}
 		let PC 		= document.getElementById("PC")
@@ -226,6 +227,19 @@ class UI {
 		let Rank	= document.getElementById("Ranking");
 		let R_div	= document.querySelector("#Ranking>div")
 		let Rico	= document.querySelector("#Ranking>img");
+		
+		if(localStorage.getItem("userData")){
+			let myObject = JSON.parse(localStorage.getItem("userData"))
+			for (var value of myObject) {
+				console.log(value["rankName"]);
+				let p = document.createElement("p");
+				p.textContent = "| "+value["rankName"]+" |";
+				let sp = document.createElement("span");
+				sp.textContent = "| "+value["highScore"]+" |";
+				p.appendChild(sp);
+				R_div.appendChild(p);
+			}
+		}
 		
 		Rank.addEventListener("click",f_leaderBoard)
 		Tut.addEventListener("click",f_info)
@@ -241,7 +255,7 @@ class UI {
 		insertAfter(score, this.grid_table);
 		document.querySelector("#highScore>span").textContent = 
 			localStorage.getItem("userData") ?  
-			JSON.parse(localStorage.getItem("userData")).highScore : 
+			this.findKeyWithHighestValue()["highScore"] : 
 			"N/A";
 			
 		set.forEach(t => {
@@ -255,18 +269,15 @@ class UI {
 
 	};
 
-	// pushRanking(data) {
-	// 	console.log(data)
-	// 	let leaderBoard = document.getElementById("Ranking");
-	// }
 	updateHighScore() {
 		let highScore = document.querySelector("#highScore>span");
-		let aux = JSON.parse(localStorage.getItem("userData"));
-		
+		highScore.textContent = this.findKeyWithHighestValue()["highScore"]
 	}
 	findKeyWithHighestValue() {
+		let highestValue = -Infinity;
 		let itemWithHighestValue = null;
 		let userData = JSON.parse(localStorage.getItem("userData"));
+
 		console.log("userData: ",userData)
 		for (let i = 0; i < userData.length; i++) {
 			let value = parseFloat(userData[i].highScore);
@@ -334,16 +345,22 @@ class UI {
 			let LSAux = [];
 			
 			if( localStorage.getItem("userData") ){ // si existe 
-				if(localStorage.getItem("userData").length > 1){ // y ya contiene multiples objetos
-					LSAux.push(JSON.parse(localStorage.getItem("userData")));  
-					LSAux.push(data);//hace una carga normal
+				if(JSON.parse(localStorage.getItem("userData")).length){// y ya contiene multiples objetos
+					
+					console.log("Si local storage contiene mas de 1 objeto")
+					LSAux = JSON.parse(localStorage.getItem("userData"));
+					LSAux.push(data)  
+				
 				}else{ //si existe y no es mayor a 1
+
+					console.log("Si local storage no contiene mas de 1 objeto")	
 					LSAux = [];//convertimos a LSAux en un array
 					LSAux.push(JSON.parse(localStorage.getItem("userData")));
 					LSAux.push(data);
 					// y creamos la estructura para las siguientes adiciones
 				}
 			} else { //si no existe, hacemos una carga simple
+				console.log("Si local storage no contiene objetos")
 				LSAux=data;
 			};
 			localStorage.setItem("userData", JSON.stringify(LSAux));
@@ -444,7 +461,7 @@ class animator {
 }
 class gameplay {
 	currScore 	= 0;
-	// highScore 	= JSON.parse(localStorage.getItem("userData")).highScore;
+	highScore 	= "";
 	_GPTileSet 	= new tileSet();
 	target 		= document.getElementById("canvas");
 
@@ -563,15 +580,6 @@ if (document.location.search == "?admin") {
 
 // ciclo principal
 window.addEventListener('load', () => {
-	// let Mobile = document.getElementById("ELSE").classList;
-	// let PC = document.getElementById("PC").classList;
-	// if ('ontouchstart' in window) {
-	// 	Mobile.toggle("d-none")
-	// 	Mobile.toggle("d-flex")
-	// } else {
-	// 	PC.toggle("d-none")
-	// 	PC.toggle("d-flex")
-	// }
 	gp.resetBoard()
 	painter.updateSet(gp._GPTileSet.set);
 	document.querySelector("#currScore>span").innerText = gp.currScore;
