@@ -228,10 +228,9 @@ class UI {
 		let R_div	= document.querySelector("#Ranking>div")
 		let Rico	= document.querySelector("#Ranking>img");
 		
-		if(localStorage.getItem("userData")){
-			let myObject = JSON.parse(localStorage.getItem("userData"))
+		let myObject = JSON.parse(localStorage.getItem("userData"))
+		if( JSON.parse(localStorage.getItem("userData")).length>1){
 			for (var value of myObject) {
-				console.log(value["rankName"]);
 				let p = document.createElement("p");
 				p.textContent = "| "+value["rankName"]+" |";
 				let sp = document.createElement("span");
@@ -239,10 +238,19 @@ class UI {
 				p.appendChild(sp);
 				R_div.appendChild(p);
 			}
+		}else{
+			let p = document.createElement("p");
+			let sp = document.createElement("span");
+			p.textContent = "| "+myObject["rankName"]+" |";
+			sp.textContent = "| "+myObject["highScore"]+" |";
+			p.appendChild(sp);
+			R_div.appendChild(p);
 		}
 		
 		Rank.addEventListener("click",f_leaderBoard)
 		Tut.addEventListener("click",f_info)
+		Rank.addEventListener("touchend",f_leaderBoard)
+		Tut.addEventListener("touchend",f_info)
 
 		this.grid_table = document.createElement("div");
 		this.grid_table.setAttribute("class", "grid-table");
@@ -277,18 +285,18 @@ class UI {
 		let highestValue = -Infinity;
 		let itemWithHighestValue = null;
 		let userData = JSON.parse(localStorage.getItem("userData"));
-
-		console.log("userData: ",userData)
-		for (let i = 0; i < userData.length; i++) {
-			let value = parseFloat(userData[i].highScore);
-			console.log("item: ",userData[i])
-			
-		  	if (!isNaN(value) && value > highestValue) {
-				highestValue = value;
-				itemWithHighestValue = userData[i];
-		  	}
+		if( JSON.parse(localStorage.getItem("userData")).length>1){
+			for (var data of userData){
+				let value = parseFloat(data["highScore"]);
+				
+				if (!isNaN(value) && value > highestValue) {
+					highestValue = value;
+					itemWithHighestValue = value;
+				}
+			}
+			return itemWithHighestValue;
 		}
-		return itemWithHighestValue;
+		return userData["highScore"]
 	  }
 	  
 	updateScore() {
@@ -329,17 +337,17 @@ class UI {
 		mlBody.setAttribute("id", "mlBody");
 		mlCloseBtn.setAttribute("id", "btnCerrar");
 
-
-		mlCloseBtn.addEventListener("click", function () {
+		function f_close() {
 			gp.resetBoard();
 			painter.updateSet(gp._GPTileSet.set);
 			gp.resetScore();
 			painter.updateHighScore();
 			_GameOverFlag 	= false;
 			painter.cerrarModal();
-		})
-		
-		mlRankBtn.addEventListener("click", function () {
+		}
+		mlCloseBtn.addEventListener("click", f_close )
+		mlCloseBtn.addEventListener("touchend", f_close )
+		function f_rankModal() {
 			const data = { rankName: mlInput.value, highScore: gp.getCurrScore() }
 
 			let LSAux = [];
@@ -375,7 +383,9 @@ class UI {
 			painter.updateSet(gp._GPTileSet.set);
 			painter.cerrarModal();
 			_GameOverFlag = false;
-		})
+		}
+		mlRankBtn.addEventListener("click",f_rankModal)
+		mlRankBtn.addEventListener("touchend",f_rankModal)
 
 
 		document.body.appendChild(mlShadow);
@@ -404,15 +414,16 @@ class UI {
 		mlButtonsBar.setAttribute("id", "mlBtnBar");
 		mlShadow.setAttribute("class", "mlShadow");
 		mlBody.setAttribute("id", "mlBody");
-
-		mlResetBtn.addEventListener("click", function () {
+		function f_reset() {
 			painter.cerrarModal();
 			gp.resetBoard();
 			gp.resetScore();
 			painter.updateHighScore();
 			painter.updateSet(gp._GPTileSet.set);
 			_GameOverFlag = false;
-		})
+		}
+		mlResetBtn.addEventListener("click",f_reset)
+		mlResetBtn.addEventListener("touchend",f_reset)
 
 		document.body.appendChild(mlShadow);
 		mlShadow.appendChild(mlBody);
@@ -420,16 +431,14 @@ class UI {
 		mlBody.appendChild(mlParagraph);
 		mlBody.appendChild(mlButtonsBar);
 		mlButtonsBar.appendChild(mlResetBtn);
-
-		// if(document.querySelector("#currScore>span").textContent > document.querySelector("#highScore>span").textContent){
-			mlRankBtn.innerText = _winningTexts.btnRank;
-			mlRankBtn.addEventListener("click", function () {
-				
-				painter.cerrarModal();
-				painter.rankingModal();
-			});
-			mlButtonsBar.appendChild(mlRankBtn);
-		// }
+		function f_rank() {
+			painter.cerrarModal();
+			painter.rankingModal();
+		}
+		mlRankBtn.innerText = _winningTexts.btnRank;
+		mlRankBtn.addEventListener("click",f_rank);
+		mlRankBtn.addEventListener("touchend",f_rank);
+		mlButtonsBar.appendChild(mlRankBtn);
 	}
 };
 class animator {
