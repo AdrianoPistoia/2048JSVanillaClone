@@ -229,7 +229,6 @@ class UI {
 		let Rico	= document.querySelector("#Ranking>img");
 		
 		let myObject = JSON.parse(localStorage.getItem("userData"))
-		console.log("a: ",JSON.parse(localStorage.getItem("userData")))
 		if( JSON.parse(localStorage.getItem("userData")) && JSON.parse(localStorage.getItem("userData")).length>1){
 			for (var value of myObject) {
 				let p = document.createElement("p");
@@ -355,29 +354,21 @@ class UI {
 			
 			if( localStorage.getItem("userData") ){ // si existe 
 				if(JSON.parse(localStorage.getItem("userData")).length){// y ya contiene multiples objetos
-					
-					console.log("Si local storage contiene mas de 1 objeto")
 					LSAux = JSON.parse(localStorage.getItem("userData"));
 					LSAux.push(data)  
 				
 				}else{ //si existe y no es mayor a 1
 
-					console.log("Si local storage no contiene mas de 1 objeto")	
 					LSAux = [];//convertimos a LSAux en un array
 					LSAux.push(JSON.parse(localStorage.getItem("userData")));
 					LSAux.push(data);
 					// y creamos la estructura para las siguientes adiciones
 				}
 			} else { //si no existe, hacemos una carga simple
-				console.log("Si local storage no contiene objetos")
 				LSAux=data;
 			};
 			localStorage.setItem("userData", JSON.stringify(LSAux));
-			
-			
-			
-			console.log("data: ",data)
-			console.log("LSAux: ",LSAux)
+
 			gp.resetBoard();
 			gp.resetScore();
 			painter.updateHighScore();
