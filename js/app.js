@@ -229,7 +229,8 @@ class UI {
 		let Rico	= document.querySelector("#Ranking>img");
 		
 		let myObject = JSON.parse(localStorage.getItem("userData"))
-		if( JSON.parse(localStorage.getItem("userData")).length>1){
+		console.log("a: ",JSON.parse(localStorage.getItem("userData")))
+		if( JSON.parse(localStorage.getItem("userData")) && JSON.parse(localStorage.getItem("userData")).length>1){
 			for (var value of myObject) {
 				let p = document.createElement("p");
 				p.textContent = "| "+value["rankName"]+" |";
@@ -238,7 +239,7 @@ class UI {
 				p.appendChild(sp);
 				R_div.appendChild(p);
 			}
-		}else{
+		}else if(JSON.parse(localStorage.getItem("userData"))){
 			let p = document.createElement("p");
 			let sp = document.createElement("span");
 			p.textContent = "| "+myObject["rankName"]+" |";
