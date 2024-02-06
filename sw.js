@@ -9,6 +9,9 @@ self.addEventListener('install', function (event) {
         '/icons/consola.png',
         '/css/style.css',
         '/js/app.js',
+        '/js/login.js',
+        '/js/util.js',
+        // '/js/plagueDoctor.js',
         '/sw.js',
         //cache de bootstrap para el offline
         'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',

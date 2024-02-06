@@ -11,9 +11,7 @@ if ('serviceWorker' in navigator) {
 	});
 }
 
-function insertAfter(referenceNode, newNode) {
-	referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-}
+
 
 let _winningTexts = {
 	"title": "Good Job!",
@@ -33,18 +31,11 @@ let _rankModalTexts = {
 	"parr": "Your name will be displayed along side you high score!",
 	"btnSubmitRank": "Submit Rank!"
 }
-let playerDom = document.getElementById("block");
-let intPropertyValue = (target, property) => {
-	return parseInt(window.getComputedStyle(target).getPropertyValue(property));
-}
-function addPositions(arr, arr2) {
-	let aux = [];
-	aux[0] = arr[0] + arr2[0];
-	aux[1] = arr[1] + arr2[1];
-	return aux;
-}
+
+
 
 //Variables
+let playerDom = document.getElementById("block");
 
 let game_start = false;
 
@@ -63,50 +54,6 @@ let _setYOffset = 4;
 let _GameOverFlag = false;
 
 let _MessageCounter = 0;
-
-
-class PlagueDoctor {
-	target = "";
-	constructor(id, title) {
-		if (!document.querySelector(".operationTable")) {
-			let operationTable = document.createElement("div");
-			operationTable.setAttribute("class", "operationTable")
-			document.body.appendChild(operationTable);
-		}
-		let chatWindow = document.createElement("div");
-		chatWindow.setAttribute("id", id);
-		chatWindow.setAttribute("class", "crowChat");
-		document.querySelector(".operationTable").appendChild(chatWindow);
-		this.target = document.getElementById(id);
-		this.addTitle(title, document.getElementById(id));
-	}
-	addTitle(title, target) {
-		let h2 = document.createElement("h2");
-		h2.textContent = title;
-		target.appendChild(h2);
-	};
-	addMensaje(mensaje, object) {
-		let p = document.createElement("p");
-		let hr = "</hr>";
-		let br = "</br>";
-		let iter = 0;
-		p.innerHTML = `[${_MessageCounter++}]: ` + mensaje + br;
-
-		if (typeof object === "object" && object.length > 1) {
-			object.forEach(obj => {
-				p.innerHTML += JSON.stringify(obj) + br;
-				iter++;
-			})
-			this.target.appendChild(p);
-		} else if (typeof object === "object") {
-			p.innerHTML += JSON.stringify(object) + hr;
-			this.target.appendChild(p);
-		} else {
-			p.innerHTML += object + hr;
-			this.target.appendChild(p);
-		}
-	}
-}
 
 class tile {
 	value;
@@ -570,9 +517,10 @@ class gameplay {
 }
 
 
-let gp = new gameplay();
-let robert = new animator();
+let gp 		= new gameplay();
+let robert 	= new animator();
 let painter = new UI(gp._GPTileSet.set);
+let login 	= new loginManager()
 //Si entras en la ventana de admin hay ventana de debugeo
 if (document.location.search == "?admin") {
 	let crow = new PlagueDoctor("Crow", "Movimiento de tiles");

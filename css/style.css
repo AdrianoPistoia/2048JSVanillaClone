@@ -200,7 +200,14 @@ h1>span{
     left:               0;
     top:                0;
 }
-#mlBody{
+.mlForm{
+    justify-content:    center;
+    flex-direction:     column;
+    align-items:        center;
+    display:            flex;
+    width:              100%;
+}
+#mlBody,.mlBody{
     background-color:   rgb(159, 197, 230);
     flex-direction:     column;
     border-radius:      1.5rem;
@@ -218,25 +225,27 @@ h1>span{
     -moz-box-shadow:    0px 0px 99px -23px rgba(0,0,0,0.75) inset;
     box-shadow:         0px 0px 99px -23px rgba(0,0,0,0.75) inset;
 }
-#mlBody h2{
+#mlBody h2,.mlBody h2{
+    font-weight:        bold;
     height:             20%;
     width:              50%;
 }
-#mlBody p{
-    font-size:          larger;
+#mlBody p, .mlBody p, .mlForm label{
+    font-weight:        bold;
+    font-size:          normal;
     height:             fit-content;
     width:              60%;
 }
-#mlBody p,#mlBody h2,#mlBody button{
+#mlBody p,#mlBody h2,#mlBody button, .mlBody p, .mlBody h2, .mlBody button{
     font-family:        Verdana, Geneva, Tahoma, sans-serif !important;
     font-weight:        bold;
 }
-#mlInput{
+#mlInput, .mlInput{
     border-radius:      6px;
     height:             1.6rem;
     width:              40%;
 }
-#mlInput+button{
+#mlInput+button, .mlInput+button{
     justify-content:    space-evenly;
     align-items:        center;
     margin-top:         auto;
@@ -244,13 +253,13 @@ h1>span{
     height:             30px;
     width:              40%;
 }
-#mlBtnBar{
+#mlBtnBar, .mlBtnBar{
     justify-content:    space-evenly;
     margin-top:         auto;
     display:            flex;
     width:              80%;
 } 
-#mlBtnBar button{
+#mlBtnBar button, .mlBtnBar button{
     font-size:          large;
     height:             2.5rem;
     width:              12rem;
@@ -289,7 +298,7 @@ h1>span{
     font-size:          x-large;
     color:              rgba(240, 240, 240, 0.6);
 } */
-#btnCerrar{
+#btnCerrar, .btnCerrar{
     background-color:   red;
     border-radius:      50% 50%;
     font-weight:        bolder;
@@ -303,7 +312,7 @@ h1>span{
     transition:         opacity 0.6s ease-in-out, 
                         transform 0.6s ease-in-out;
 }
-#btnCerrar:hover{
+#btnCerrar:hover, .btnCerrar:hover{
     opacity: 1;
     transform: scale(1.1);
 }
