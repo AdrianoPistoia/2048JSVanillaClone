@@ -520,7 +520,7 @@ class gameplay {
 let gp 		= new gameplay();
 let robert 	= new animator();
 let painter = new UI(gp._GPTileSet.set);
-let login 	= new loginManager()
+// let login 	= new loginManager()
 //Si entras en la ventana de admin hay ventana de debugeo
 if (document.location.search == "?admin") {
 	let crow = new PlagueDoctor("Crow", "Movimiento de tiles");
